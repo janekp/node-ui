@@ -33,6 +33,7 @@ namespace nui {
         static Application *SharedInstance();
         static void Initialize(v8::Handle<v8::Object> target);
         
+        static v8::Handle<v8::Value> GetSession(v8::Local<v8::String> prop, const v8::AccessorInfo &info);
         static v8::Handle<v8::Value> GetWindows(v8::Local<v8::String> prop, const v8::AccessorInfo &info);
     };
 }

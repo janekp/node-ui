@@ -152,7 +152,7 @@ namespace nui {
 
 - (void)loadFileAtPath:(NSString *)path
 {
-    [[self mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:path]]];
+    [[self mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:path]]];
 }
 
 - (void)loadHTMLString:(NSString *)str

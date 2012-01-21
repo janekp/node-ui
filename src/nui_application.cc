@@ -35,12 +35,21 @@ namespace nui {
         
         templ->SetInternalFieldCount(1);
         EventEmitter::Initialize(templ);
+        templ->SetAccessor(v8::String::NewSymbol("session"), Application::GetSession, NULL);
         templ->SetAccessor(v8::String::NewSymbol("windows"), Application::GetWindows, NULL);
         
         v8::Local<v8::Object> application = templ->NewInstance();
         Application::SharedInstance()->Wrap(application);
         
         target->Set(v8::String::NewSymbol("application"), application);
+    }
+    
+    v8::Handle<v8::Value> Application::GetSession(v8::Local<v8::String> prop, const v8::AccessorInfo &info) {
+        v8::HandleScope scope;
+        
+        // TODO: 
+        
+        return scope.Close(v8::String::New("TDB"));
     }
     
     v8::Handle<v8::Value> Application::GetWindows(v8::Local<v8::String> prop, const v8::AccessorInfo &info) {
