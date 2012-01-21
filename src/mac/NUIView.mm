@@ -168,7 +168,7 @@ namespace nui {
     nui::MacView *view = (nui::MacView *)self->m_handle;
     
     if(view) {
-        view->Emit("load");
+        view->Emit("ready");
     }
 }
 
