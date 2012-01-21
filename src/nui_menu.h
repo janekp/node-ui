@@ -25,7 +25,7 @@
 #include "nui_events.h"
 
 namespace nui {
-    class Menu : public EventEmitter {
+    class Menu: public EventEmitter {
     public:
         static v8::Persistent<v8::FunctionTemplate> constructor;
         static void Initialize(v8::Handle<v8::Object> target);

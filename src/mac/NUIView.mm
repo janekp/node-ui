@@ -24,11 +24,32 @@
 #import "nui_view.h"
 
 namespace nui {
+    static void ExecScriptCallback(EventEmitter *emitter, void *context, const v8::Persistent<v8::Function> &function) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        Function *ctx = (Function *)context;
+        
+        if(emitter) {
+            v8::Local<v8::String> str = v8::String::New([(NSString *)ctx->info UTF8String]);
+            v8::Handle<v8::Value> args[1] = { str };
+            
+            ctx->data->Call(emitter->handle_, 1, args);
+        } else {
+            [(id)ctx->info release];
+            
+            ctx->data.Dispose();
+            ctx->data.Clear();
+            free(ctx);
+        }
+        
+        [pool release];
+    }
+    
     class MacView : public View {
     public:
         MacView(const v8::Local<v8::Object> &handle);
         virtual ~MacView();
         virtual void *GetImpl();
+        virtual void Exec(const char *str, v8::Handle<v8::Value> func);
         virtual void Load(const char *path);
         virtual void Load(const void *data, int length);
         
@@ -56,6 +77,22 @@ namespace nui {
     
     void *MacView::GetImpl() {
         return this->m_impl;
+    }
+    
+    void MacView::Exec(const char *str, v8::Handle<v8::Value> func) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *script = [[NSString alloc] initWithCString:str encoding:NSUTF8StringEncoding];
+        Function *_func = NULL;
+        
+        if(func->IsFunction()) {
+            _func = (Function *)malloc(sizeof(Function));
+            _func->data = v8::Persistent<v8::Function>::New(v8::Handle<v8::Function>::Cast(func));
+            _func->info = NULL;
+        }
+        
+        [this->m_impl execScript:script callback:_func];
+        [script release];
+        [pool release];
     }
     
     void MacView::Load(const char *str) {
@@ -92,6 +129,25 @@ namespace nui {
     }
     
     return self;
+}
+
+- (void)execScript:(NSString *)script callback:(void *)callback
+{
+    NSString *result = [self stringByEvaluatingJavaScriptFromString:script];
+    
+    if(callback) {
+        nui::Function *func = (nui::Function *)callback;
+        nui::MacView *view = (nui::MacView *)self->m_handle;
+        
+        if(view != NULL) {
+            func->info = (void *)[result retain];
+            view->Emit(nui::ExecScriptCallback, func);
+        } else {
+            func->data.Dispose();
+            func->data.Clear();
+            free(func);
+        }
+    }
 }
 
 - (void)loadFileAtPath:(NSString *)path

@@ -29,11 +29,12 @@ namespace nui {
     
     typedef void (*EmitCallback)(EventEmitter *emitter, void *context, const v8::Persistent<v8::Function> &function);
     
-    class EventEmitter : public node::ObjectWrap {
+    class EventEmitter: public node::ObjectWrap {
     public:
         void Emit(const std::string &name);
         void Emit(const std::string &name, int *state);
         void Emit(const std::string &name, EmitCallback cb, void *context);
+        void Emit(EmitCallback cb, void *context);
         virtual ~EventEmitter();
         
         static void Register();

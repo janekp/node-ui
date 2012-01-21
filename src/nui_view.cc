@@ -36,6 +36,7 @@ namespace nui {
         // Prototype
         v8::Local<v8::ObjectTemplate> proto = constructor->PrototypeTemplate();
         EventEmitter::Initialize(proto);
+        proto->Set(v8::String::NewSymbol("exec"), v8::FunctionTemplate::New(View::Exec)->GetFunction());
         proto->Set(v8::String::NewSymbol("load"), v8::FunctionTemplate::New(View::Load)->GetFunction());
         
         // Register
@@ -53,6 +54,27 @@ namespace nui {
         view = View::CreateNative(args.This(), 0, 0, width, height);
         
         return args.This();
+    }
+    
+    v8::Handle<v8::Value> View::Exec(const v8::Arguments &args) {
+        v8::HandleScope scope;
+        View *view = node::ObjectWrap::Unwrap<View>(args.This());
+        
+        if(args[0]->IsString()) {
+            v8::Local<v8::String> str = args[0]->ToString();
+            int length = str->Utf8Length();
+            char buffer[length + 1];
+            
+            str->WriteUtf8(&(buffer[0]), length + 1);
+            
+            if(args[1]->IsFunction()) {
+                // TODO: 
+            }
+            
+            view->Exec(&(buffer[0]), args[1]);
+        }
+        
+        return scope.Close(v8::Undefined());
     }
     
     v8::Handle<v8::Value> View::Load(const v8::Arguments &args) {

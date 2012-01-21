@@ -224,9 +224,9 @@ namespace nui {
             
             if(exec->IsFunction()) {
                 v8::Function *cb = (v8::Function *)(*exec);
-                v8::Handle<v8::Value> argv[1] = { args[0] };
+                v8::Handle<v8::Value> argv[2] = { args[0], args[1] };
                 
-                return scope.Close(cb->Call(view->handle_, 1, argv));
+                return scope.Close(cb->Call(view->handle_, 2, argv));
             }
         }
         

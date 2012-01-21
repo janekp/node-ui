@@ -33,6 +33,7 @@ namespace nui {
     static Event *events = NULL;
     static pthread_mutex_t events_lock = PTHREAD_MUTEX_INITIALIZER;
     static uv_timer_t events_timer;
+    static v8::Persistent<v8::Function> dummy_function;
     
     static void EmitStateCallback(EventEmitter *emitter, void *context, const v8::Persistent<v8::Function> &function) {
         if(emitter) {
@@ -56,7 +57,9 @@ namespace nui {
                 std::string key(e->name);
                 n = e->next;
                 
-                if(e->emitter->m_events.find(key) != e->emitter->m_events.end()) {
+                if(e->call && key.length() == 0) {
+                    (e->call)(e->emitter, e->context, dummy_function);
+                } else if(e->emitter->m_events.find(key) != e->emitter->m_events.end()) {
                     std::vector<v8::Persistent<v8::Function> > events = e->emitter->m_events[key];
                     
                     for(std::vector<v8::Persistent<v8::Function> >::iterator it = events.begin(); it != events.end(); ++it) {
@@ -75,7 +78,7 @@ namespace nui {
                     }
                 }
                 
-                if(e->call) (e->call)(NULL, e->context, v8::Persistent<v8::Function>());
+                if(e->call) (e->call)(NULL, e->context, dummy_function);
                 free(e);
                 e = n;
             }
@@ -121,6 +124,10 @@ namespace nui {
         }
         
         pthread_mutex_unlock(&events_lock);
+    }
+    
+    void EventEmitter::Emit(EmitCallback cb, void *context) {
+        this->Emit("", cb, context);
     }
     
     void EventEmitter::Register() {

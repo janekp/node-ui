@@ -25,12 +25,13 @@
 #include "nui_events.h"
 
 namespace nui {
-    class View : public EventEmitter {
+    class View: public EventEmitter {
     public:
         static v8::Persistent<v8::FunctionTemplate> constructor;
         static void Initialize(v8::Handle<v8::Object> target);
         
         static v8::Handle<v8::Value> New(const v8::Arguments &args);
+        static v8::Handle<v8::Value> Exec(const v8::Arguments &args);
         static v8::Handle<v8::Value> Load(const v8::Arguments &args);
         
         static View *CreateNative(const v8::Local<v8::Object> &handle, int x, int y, int width, int height);
@@ -38,6 +39,7 @@ namespace nui {
         View(const v8::Local<v8::Object> &handle);
         virtual ~View();
         virtual void *GetImpl() = 0;
+        virtual void Exec(const char *str, v8::Handle<v8::Value> func) = 0;
         virtual void Load(const char *path) = 0;
         virtual void Load(const void *data, int length) = 0;
     };

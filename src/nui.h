@@ -38,6 +38,11 @@ namespace nui {
     
     int Execute(int argc, char *argv[]);
     int Main(int argc, char *argv[]);
+    
+    typedef struct _Function {
+        v8::Persistent<v8::Function> data;
+        void *info;
+    } Function;
 }
 
 NODE_MODULE_DECL(ui);
