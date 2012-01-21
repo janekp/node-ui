@@ -76,7 +76,7 @@ namespace nui {
     NSRunLoop *loop = [NSRunLoop mainRunLoop];
     int state = 1;
     
-    nui::Application::SharedInstance()->Emit("close", &state);
+    nui::Application::SharedInstance()->Emit("exit", &state);
     
     // Block execution until JS code is done
     while(state) {
