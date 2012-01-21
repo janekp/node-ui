@@ -24,7 +24,7 @@ http.createServer(function(req, res) {
 		res.write('<html><body><h1>Hello World!</h1></body></html>');
 		res.end();
 	} else {
-		res.writeHead(403, { 'Content-Type': 'text/html', 'Content-Encoding': 'utf8' });
+		res.writeHead(403, { });
 		res.end();
 	}
 }).listen(33000, '127.0.0.1');
