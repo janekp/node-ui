@@ -32,6 +32,7 @@ namespace nui {
     class EventEmitter: public node::ObjectWrap {
     public:
         void Emit(const std::string &name);
+        void Emit(const std::string &name, void *nativePtr);
         void Emit(const std::string &name, int *state);
         void Emit(const std::string &name, EmitCallback cb, void *context);
         void Emit(EmitCallback cb, void *context);

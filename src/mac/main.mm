@@ -19,6 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#include "nui_events.h"
 #include "nui_io.h"
 
 extern "C" {
@@ -27,6 +28,26 @@ extern "C" {
 }
 
 namespace nui {
+    static void EmitNativeCallback(EventEmitter *emitter, void *context, const v8::Persistent<v8::Function> &function) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *obj = (NSString *)context;
+        
+        if(emitter) {
+            v8::Local<v8::String> str = v8::String::New([obj UTF8String]);
+            v8::Handle<v8::Value> args[1] = { str };
+            
+            function->Call(emitter->handle_, 1, args);
+        } else {
+            [obj release];
+        }
+        
+        [pool release];
+    }
+    
+    void EventEmitter::Emit(const std::string &name, void *nativePtr) {
+        this->Emit(name, EmitNativeCallback, nativePtr);
+    }
+    
     int Main(int argc, char *argv[]) {
         // The app is being launched from GUI or execv()
         if(argc > 0 && strstr(argv[0], ".app/Contents/MacOS")) {

@@ -163,6 +163,17 @@ namespace nui {
 
 #pragma mark WebFrameLoadDelegate
 
+- (void)webView:(WebView *)sender willPerformClientRedirectToURL:(NSURL *)URL delay:(NSTimeInterval)seconds fireDate:(NSDate *)date forFrame:(WebFrame *)frame
+{
+    if([URL.scheme isEqualToString:@"nui"]) {
+        nui::MacView *view = (nui::MacView *)self->m_handle;
+        
+        if(view) {
+            view->Emit("data", [[[URL absoluteString] substringFromIndex:6] retain]);
+        }
+    }
+}
+
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
 {
     nui::MacView *view = (nui::MacView *)self->m_handle;
