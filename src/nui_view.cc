@@ -19,6 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#include "nui_buffer.h"
 #include "nui_view.h"
 
 namespace nui {
@@ -56,10 +57,9 @@ namespace nui {
     
     v8::Handle<v8::Value> View::Load(const v8::Arguments &args) {
         v8::HandleScope scope;
+        View *view = node::ObjectWrap::Unwrap<View>(args.This());
         
         if(args[0]->IsString()) {
-            v8::HandleScope scope;
-            View *view = node::ObjectWrap::Unwrap<View>(args.This());
             v8::Local<v8::String> str = args[0]->ToString();
             int length = str->Utf8Length();
             
@@ -69,6 +69,23 @@ namespace nui {
                 str->WriteUtf8(&(buffer[0]), length + 1);
                 view->Load(&(buffer[0]));
             }
+        } else if(args[0]->IsFunction()) {
+            v8::TryCatch try_catch;
+            v8::Local<v8::Function> cb = v8::Local<v8::Function>::Cast(args[0]);
+            Buffer *buffer = Buffer::Create();
+            v8::Handle<v8::Value> args[1] = { buffer->handle_ };
+            v8::Persistent<v8::Object> handle = buffer->handle_;
+            
+            cb->Call(view->handle_, 1, args);
+            
+            if(try_catch.HasCaught()) {
+                node::FatalException(try_catch);
+                return scope.Close(v8::Undefined());
+            }
+            
+            view->Load(buffer->GetData(), buffer->GetLength());
+            handle.Dispose();
+            handle.Clear();
         }
         
         return scope.Close(v8::Undefined());

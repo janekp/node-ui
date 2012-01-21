@@ -26,7 +26,7 @@
 #include "nui_view.h"
 
 namespace nui {
-    class Window : public EventEmitter {
+    class Window: public EventEmitter {
     public:
         static v8::Persistent<v8::FunctionTemplate> constructor;
         static void Initialize(v8::Handle<v8::Object> target);
@@ -51,6 +51,7 @@ namespace nui {
         Window(const v8::Local<v8::Object> &handle);
         virtual ~Window();
         virtual View *GetView() = 0;
+        virtual void SetView(View *view) = 0;
         virtual void Show() = 0;
         virtual void Hide() = 0;
         virtual int IsVisible() = 0;
@@ -60,6 +61,16 @@ namespace nui {
         virtual void SetHeight(int height) = 0;
         virtual std::string GetTitle() = 0;
         virtual void SetTitle(std::string title) = 0;
+    };
+    
+    class WebWindow: public Window {
+    public:
+        static v8::Persistent<v8::FunctionTemplate> constructor;
+        static void Initialize(v8::Handle<v8::Object> target);
+        
+        static v8::Handle<v8::Value> New(const v8::Arguments &args);
+        static v8::Handle<v8::Value> Exec(const v8::Arguments &args);
+        static v8::Handle<v8::Value> Load(const v8::Arguments &args);
     };
 }
 

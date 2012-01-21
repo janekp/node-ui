@@ -32,5 +32,6 @@
 - (id)initWithHandle:(void *)handle;
 
 - (void)loadFileAtPath:(NSString *)path;
+- (void)loadHTMLString:(NSString *)str;
 
 @end

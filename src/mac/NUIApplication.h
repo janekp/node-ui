@@ -23,7 +23,4 @@
 
 @interface NUIApplication : NSApplication <NSApplicationDelegate>
 
-- (void)emit:(NSString *)event;
-- (void)emitAndWaitUntilDone:(NSString *)event;
-
 @end

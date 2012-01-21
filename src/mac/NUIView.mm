@@ -30,6 +30,7 @@ namespace nui {
         virtual ~MacView();
         virtual void *GetImpl();
         virtual void Load(const char *path);
+        virtual void Load(const void *data, int length);
         
     protected:
         NUIView *m_impl;
@@ -39,8 +40,9 @@ namespace nui {
     MacView::MacView(const v8::Local<v8::Object> &handle): View(handle) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         
-        this->m_impl = [(NUIView *)[NUIProxy allocWithName:@"NUIView"] initWithHandle:this];
+        this->m_impl = (NUIView *)[NUIProxy allocWithName:@"NUIView"];
         this->m_ref = 0;
+        [this->m_impl initWithHandle:this];
         
         [pool release];
     }
@@ -65,6 +67,15 @@ namespace nui {
         [pool release];
     }
     
+    void MacView::Load(const void *data, int length) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *str = [[NSString alloc] initWithBytesNoCopy:(void *)data length:length encoding:NSUTF8StringEncoding freeWhenDone:NO];
+        
+        [this->m_impl loadHTMLString:str];
+        [str release];
+        [pool release];
+    }
+    
     View *View::CreateNative(const v8::Local<v8::Object> &handle, int x, int y, int width, int height) {
         return new MacView::MacView(handle);
     }
@@ -85,8 +96,12 @@ namespace nui {
 
 - (void)loadFileAtPath:(NSString *)path
 {
-    [[self mainFrame] loadHTMLString:@"<html><body><h1>Hello World</h1></body></html>" baseURL:nil];
-    //[[self mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:path]]];
+    [[self mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:path]]];
+}
+
+- (void)loadHTMLString:(NSString *)str
+{
+    [[self mainFrame] loadHTMLString:str baseURL:nil];
 }
 
 @end

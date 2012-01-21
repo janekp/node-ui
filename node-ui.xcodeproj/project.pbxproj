@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		817A9BF914CA557C00A0836B /* nui_buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 817A9BF814CA557C00A0836B /* nui_buffer.cc */; };
 		817E687714BA13F700FA79B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 817E687614BA13F700FA79B6 /* Foundation.framework */; };
 		817E688514BA15EE00FA79B6 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 817E688414BA15EE00FA79B6 /* AppKit.framework */; };
 		81844C6C14C9C979008745CD /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81844C6B14C9C979008745CD /* WebKit.framework */; };
@@ -39,6 +40,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		817A9BF614CA556500A0836B /* nui_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nui_buffer.h; path = src/nui_buffer.h; sourceTree = SOURCE_ROOT; };
+		817A9BF814CA557C00A0836B /* nui_buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = nui_buffer.cc; path = src/nui_buffer.cc; sourceTree = SOURCE_ROOT; };
 		817E687214BA13F700FA79B6 /* node-ui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "node-ui"; sourceTree = BUILT_PRODUCTS_DIR; };
 		817E687614BA13F700FA79B6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		817E688414BA15EE00FA79B6 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -119,6 +122,8 @@
 				817E688914BA1ACE00FA79B6 /* mac */,
 				81F218B114CA1F3A00E38383 /* nui_application.h */,
 				81F218B014CA1F3A00E38383 /* nui_application.cc */,
+				817A9BF614CA556500A0836B /* nui_buffer.h */,
+				817A9BF814CA557C00A0836B /* nui_buffer.cc */,
 				81F218B314CA1F3A00E38383 /* nui_events.h */,
 				81F218B214CA1F3A00E38383 /* nui_events.cc */,
 				81F218B614CA1F3A00E38383 /* nui_io.h */,
@@ -219,6 +224,7 @@
 				81F218C414CA1F3A00E38383 /* nui_view.cc in Sources */,
 				81F218C514CA1F3A00E38383 /* nui_window.cc in Sources */,
 				81F218C614CA1F3A00E38383 /* nui.cc in Sources */,
+				817A9BF914CA557C00A0836B /* nui_buffer.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

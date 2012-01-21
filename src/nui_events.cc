@@ -42,7 +42,7 @@ namespace nui {
         }
     }
     
-    static void CheckEmitters(uv_timer_t *handle, int status) {
+    static void CheckEvents(uv_timer_t *handle, int status) {
         if(events != NULL) {
             Event *e, *n;
             
@@ -125,9 +125,8 @@ namespace nui {
     
     void EventEmitter::Register() {
         uv_timer_init(uv_default_loop(), &events_timer);
-        uv_timer_start(&events_timer, CheckEmitters, 10, 10); // 10ms
+        uv_timer_start(&events_timer, CheckEvents, 10, 10); // 10ms
     }
-    
     
     void EventEmitter::Initialize(const v8::Handle<v8::ObjectTemplate> &target) {
         target->Set(v8::String::NewSymbol("addListener"), v8::FunctionTemplate::New(EventEmitter::AddListener)->GetFunction());

@@ -38,22 +38,6 @@ namespace nui {
 
 @implementation NUIApplication
 
-- (void)emit:(NSString *)event
-{
-    nui::Application::SharedInstance()->Emit(event.UTF8String);
-}
-
-- (void)emitAndWaitUntilDone:(NSString *)event
-{
-    int state = 1;
-    
-    nui::Application::SharedInstance()->Emit(event.UTF8String, &state);
-    
-    while(state) {
-        usleep(1000); // 1ms
-    }
-}
-
 #pragma mark NSApplicationDelegate
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
@@ -67,42 +51,40 @@ namespace nui {
     
     // Block execution until JS code is done
     while(!nui::Ready) {
-        NSDate *date = [[NSDate alloc] initWithTimeIntervalSinceNow:0.01];
+        NSDate *date = [[NSDate alloc] initWithTimeIntervalSinceNow:0.02];
         
         [loop runMode:NSDefaultRunLoopMode beforeDate:date];
         [date release];
-        
-        usleep(1000); // 1ms
     }
     
-    [self emit:@"ready"];
-    /*NSMenu *mainMenu = [[NSMenu alloc] initWithTitle:@"Test"];
-    
-    [mainMenu addItemWithTitle:@"Quit" action:@selector(quit:) keyEquivalent:@""];
-    [self setMainMenu:mainMenu];
-    //[mainMenu setValue:@"NSMainMenu" forKey:@"name"];
-    
-    NSLog(@"COOL!");
-    
-    NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 500, 400) styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:YES];
-    
-    [window orderFront:nil];*/
+    nui::Application::SharedInstance()->Emit("ready");
     
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification
 {
-    [self emit:@"activate"];
+    nui::Application::SharedInstance()->Emit("activate");
 }
 
 - (void)applicationDidResignActive:(NSNotification *)notification
 {
-    [self emit:@"deactivate"];
+    nui::Application::SharedInstance()->Emit("deactivate");
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
-    [self emitAndWaitUntilDone:@"close"];
+    NSRunLoop *loop = [NSRunLoop mainRunLoop];
+    int state = 1;
+    
+    nui::Application::SharedInstance()->Emit("close", &state);
+    
+    // Block execution until JS code is done
+    while(state) {
+        NSDate *date = [[NSDate alloc] initWithTimeIntervalSinceNow:0.02];
+        
+        [loop runMode:NSDefaultRunLoopMode beforeDate:date];
+        [date release];
+    }
 }
 
 #pragma mark NSObject

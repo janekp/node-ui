@@ -39,6 +39,7 @@ namespace nui {
         virtual ~View();
         virtual void *GetImpl() = 0;
         virtual void Load(const char *path) = 0;
+        virtual void Load(const void *data, int length) = 0;
     };
 }
 

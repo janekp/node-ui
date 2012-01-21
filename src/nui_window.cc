@@ -24,6 +24,17 @@
 namespace nui {
     v8::Persistent<v8::FunctionTemplate> Window::constructor;
     
+    static void InitializeCommon(const v8::Local<v8::ObjectTemplate> &proto) {
+        EventEmitter::Initialize(proto);
+        proto->SetAccessor(v8::String::NewSymbol("view"), Window::GetView, Window::SetView);
+        proto->SetAccessor(v8::String::NewSymbol("width"), Window::GetWidth, Window::SetWidth);
+        proto->SetAccessor(v8::String::NewSymbol("height"), Window::GetHeight, Window::SetHeight);
+        proto->SetAccessor(v8::String::NewSymbol("title"), Window::GetTitle, Window::SetTitle);
+        proto->SetAccessor(v8::String::NewSymbol("visible"), Window::GetVisible, NULL);
+        proto->Set(v8::String::NewSymbol("show"), v8::FunctionTemplate::New(Window::Show)->GetFunction());
+        proto->Set(v8::String::NewSymbol("hide"), v8::FunctionTemplate::New(Window::Hide)->GetFunction());
+    }
+    
     void Window::Initialize(v8::Handle<v8::Object> target) {
         v8::HandleScope scope;
         
@@ -34,14 +45,7 @@ namespace nui {
         
         // Prototype
         v8::Local<v8::ObjectTemplate> proto = constructor->PrototypeTemplate();
-        EventEmitter::Initialize(proto);
-        proto->SetAccessor(v8::String::NewSymbol("view"), Window::GetView, Window::SetView);
-        proto->SetAccessor(v8::String::NewSymbol("width"), Window::GetWidth, Window::SetWidth);
-        proto->SetAccessor(v8::String::NewSymbol("height"), Window::GetHeight, Window::SetHeight);
-        proto->SetAccessor(v8::String::NewSymbol("title"), Window::GetTitle, Window::SetTitle);
-        proto->SetAccessor(v8::String::NewSymbol("visible"), Window::GetVisible, NULL);
-        proto->Set(v8::String::NewSymbol("show"), v8::FunctionTemplate::New(Window::Show)->GetFunction());
-        proto->Set(v8::String::NewSymbol("hide"), v8::FunctionTemplate::New(Window::Hide)->GetFunction());
+        InitializeCommon(proto);
         
         // Register
         target->Set(v8::String::NewSymbol("Window"), constructor->GetFunction());
@@ -91,23 +95,31 @@ namespace nui {
     }
     
     void Window::SetView(v8::Local<v8::String> prop, v8::Local<v8::Value> val, const v8::AccessorInfo &info) {
-        
+        // TODO: 
     }
     
     v8::Handle<v8::Value> Window::GetWidth(v8::Local<v8::String> prop, const v8::AccessorInfo &info) {
-        return v8::String::New("");
+        v8::HandleScope scope;
+        
+        // TODO:
+        
+        return scope.Close(v8::Undefined());
     }
     
     void Window::SetWidth(v8::Local<v8::String> prop, v8::Local<v8::Value> val, const v8::AccessorInfo &info) {
-        
+        // TODO: 
     }
     
     v8::Handle<v8::Value> Window::GetHeight(v8::Local<v8::String> prop, const v8::AccessorInfo &info) {
-        return v8::Undefined();
+        v8::HandleScope scope;
+        
+        // TODO:
+        
+        return scope.Close(v8::Undefined());
     }
     
     void Window::SetHeight(v8::Local<v8::String> prop, v8::Local<v8::Value> val, const v8::AccessorInfo &info) {
-        
+        // TODO: 
     }
     
     v8::Handle<v8::Value> Window::GetTitle(v8::Local<v8::String> prop, const v8::AccessorInfo &info) {
@@ -168,5 +180,75 @@ namespace nui {
                 break;
             }
         }
+    }
+    
+    v8::Persistent<v8::FunctionTemplate> WebWindow::constructor;
+    
+    void WebWindow::Initialize(v8::Handle<v8::Object> target) {
+        v8::HandleScope scope;
+        
+        // Constructor
+        constructor = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New(WebWindow::New));
+        constructor->InstanceTemplate()->SetInternalFieldCount(1);
+        constructor->SetClassName(v8::String::NewSymbol("WebWindow"));
+        
+        // Prototype
+        v8::Local<v8::ObjectTemplate> proto = constructor->PrototypeTemplate();
+        InitializeCommon(proto);
+        proto->Set(v8::String::NewSymbol("exec"), v8::FunctionTemplate::New(WebWindow::Exec)->GetFunction());
+        proto->Set(v8::String::NewSymbol("load"), v8::FunctionTemplate::New(WebWindow::Load)->GetFunction());
+        
+        // Register
+        target->Set(v8::String::NewSymbol("WebWindow"), constructor->GetFunction());
+    }
+    
+    v8::Handle<v8::Value> WebWindow::New(const v8::Arguments &args) {
+        v8::HandleScope scope;
+        v8::Local<v8::Object> handle = View::constructor->GetFunction()->NewInstance(0, NULL);
+        Window *window;
+        
+        Window::New(args);
+        window = node::ObjectWrap::Unwrap<Window>(args.This());
+        window->SetView(node::ObjectWrap::Unwrap<View>(handle));
+        
+        return args.This();
+    }
+    
+    v8::Handle<v8::Value> WebWindow::Exec(const v8::Arguments &args) {
+        v8::HandleScope scope;
+        Window *window = node::ObjectWrap::Unwrap<Window>(args.This());
+        View *view = window->GetView();
+        
+        if(view) {
+            v8::Handle<v8::Value> exec = view->handle_->GetPrototype()->ToObject()->Get(v8::String::NewSymbol("exec"));
+            
+            if(exec->IsFunction()) {
+                v8::Function *cb = (v8::Function *)(*exec);
+                v8::Handle<v8::Value> argv[1] = { args[0] };
+                
+                return scope.Close(cb->Call(view->handle_, 1, argv));
+            }
+        }
+        
+        return scope.Close(v8::Undefined());
+    }
+    
+    v8::Handle<v8::Value> WebWindow::Load(const v8::Arguments &args) {
+        v8::HandleScope scope;
+        Window *window = node::ObjectWrap::Unwrap<Window>(args.This());
+        View *view = window->GetView();
+        
+        if(view) {
+            v8::Handle<v8::Value> load = view->handle_->GetPrototype()->ToObject()->Get(v8::String::NewSymbol("load"));
+            
+            if(load->IsFunction()) {
+                v8::Function *cb = (v8::Function *)(*load);
+                v8::Handle<v8::Value> argv[1] = { args[0] };
+                
+                return scope.Close(cb->Call(view->handle_, 1, argv));
+            }
+        }
+        
+        return scope.Close(v8::Undefined());
     }
 }

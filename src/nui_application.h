@@ -25,7 +25,7 @@
 #include "nui_events.h"
 
 namespace nui {
-    class Application : public EventEmitter {
+    class Application: public EventEmitter {
     public:
         Application();
         virtual ~Application();

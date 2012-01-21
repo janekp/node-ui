@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include "nui.h"
 #include "nui_application.h"
+#include "nui_buffer.h"
 #include "nui_menu.h"
 #include "nui_view.h"
 #include "nui_window.h"
@@ -37,9 +38,11 @@ namespace nui {
     
     static void Initialize(v8::Handle<v8::Object> target) {
         Application::Initialize(target);
+        Buffer::Initialize(target);
         Menu::Initialize(target);
         View::Initialize(target);
         Window::Initialize(target);
+        WebWindow::Initialize(target);
     }
     
     static void Complete(uv_timer_t *handle, int status) {

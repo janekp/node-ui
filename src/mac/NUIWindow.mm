@@ -35,6 +35,7 @@ namespace nui {
         virtual void Hide();
         virtual int IsVisible();
         virtual View *GetView();
+        virtual void SetView(View *view);
         virtual int GetWidth();
         virtual void SetWidth(int width);
         virtual int GetHeight();
@@ -51,9 +52,11 @@ namespace nui {
     MacWindow::MacWindow(const v8::Local<v8::Object> &handle, int width, int height, const char *title): Window(handle) {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         
-        this->m_impl = [(NUIWindow *)[NUIProxy allocWithClass:[NUIWindow class]] initWithHandle:this contentRect:NSMakeRect(0.0F, 0.0F, width, height) styleMask:NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:YES];
+        this->m_impl = (NUIWindow *)[NUIProxy allocWithClass:[NUIWindow class]];
         this->m_ref = 0;
         this->m_view = NULL;
+        
+        [this->m_impl initWithHandle:this contentRect:NSMakeRect(0.0F, 0.0F, width, height) styleMask:NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask | NSResizableWindowMask backing:NSBackingStoreBuffered defer:YES];
         
         if(title) {
             [this->m_impl setTitle:[[[NSString alloc] initWithCString:title encoding:NSUTF8StringEncoding] autorelease]];
@@ -104,17 +107,17 @@ namespace nui {
     }
     
     View *MacWindow::GetView() {
-        if(!this->m_view) {
-            v8::Local<v8::Object> handle = View::constructor->GetFunction()->NewInstance(0, NULL);
+        return this->m_view;
+    }
+    
+    void MacWindow::SetView(View *view) {
+        if(this->m_view != view) {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
             
-            this->m_view = node::ObjectWrap::Unwrap<View>(handle);
+            this->m_view = view;
             [this->m_impl setContentView:NUIObject(this->m_view->GetImpl())];
-            
             [pool release];
         }
-        
-        return this->m_view;
     }
     
     int MacWindow::GetWidth() {
