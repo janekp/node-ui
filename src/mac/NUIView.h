@@ -32,7 +32,7 @@
 - (id)initWithHandle:(void *)handle;
 
 - (void)execScript:(NSString *)script callback:(void *)callback;
-- (void)loadFileAtPath:(NSString *)path;
+- (void)loadPathString:(NSString *)path;
 - (void)loadHTMLString:(NSString *)str;
 
 @end

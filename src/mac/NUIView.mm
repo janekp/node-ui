@@ -99,7 +99,7 @@ namespace nui {
         NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         NSString *path = [[NSString alloc] initWithCString:str encoding:NSUTF8StringEncoding];
         
-        [this->m_impl loadFileAtPath:path];
+        [this->m_impl loadPathString:path];
         [path release];
         [pool release];
     }
@@ -151,7 +151,7 @@ namespace nui {
     }
 }
 
-- (void)loadFileAtPath:(NSString *)path
+- (void)loadPathString:(NSString *)path
 {
     [[self mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:path]]];
 }
@@ -169,7 +169,7 @@ namespace nui {
         nui::MacView *view = (nui::MacView *)self->m_handle;
         
         if(view) {
-            view->Emit("data", [[[URL absoluteString] substringFromIndex:6] retain]);
+            view->Emit("data", [[URL absoluteString] substringFromIndex:6]);
         }
     }
 }

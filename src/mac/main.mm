@@ -45,7 +45,7 @@ namespace nui {
     }
     
     void EventEmitter::Emit(const std::string &name, void *nativePtr) {
-        this->Emit(name, EmitNativeCallback, nativePtr);
+        this->Emit(name, EmitNativeCallback, [(id)nativePtr retain]);
     }
     
     int Main(int argc, char *argv[]) {
