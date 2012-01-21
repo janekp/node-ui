@@ -1,0 +1,56 @@
+<html>
+	<head>
+		<script type="text/javascript">
+            function press(el) {
+                var i = el.id.split('_');
+                window.location = 'nui://' + i[1] + '/' + i[2];
+            }
+            
+            function change(row, col, state) {
+            	document.getElementById('b_' + row + '_' + col).setAttribute('style', 'background: ' + ((state) ? 'yellow' : 'white'));
+            }
+            
+            function gameover() {
+            	document.getElementById('gameover').setAttribute('style', 'display: block');
+            }
+        </script>
+        <style type="text/css">
+            div {
+                position: absolute;
+                width: 33%;
+                height: 33%;
+                border: 1px solid black;
+            }
+            
+            h1 {
+            	color: red;
+            	text-align: center;
+            }
+            
+            div#gameover {
+                border-width: 0px;
+                display: none;
+            }
+            
+            div.r1 { top: 0%; }
+            div.r2 { top: 33%; }
+            div.r3 { top: 66%; }
+            
+            div.c1 { left: 0%; }
+            div.c2 { left: 33%; }
+            div.c3 { left: 66%; }
+        </style>
+	</head>
+	<body>
+		<div id="b_0_0" class="r1 c1" onclick="press(this)"></div>
+        <div id="b_0_1" class="r1 c2" onclick="press(this)"></div>
+        <div id="b_0_2" class="r1 c3" onclick="press(this)"></div>
+        <div id="b_1_0" class="r2 c1" onclick="press(this)"></div>
+        <div id="b_1_1" class="r2 c2" onclick="press(this)"></div>
+        <div id="b_1_2" class="r2 c3" onclick="press(this)"></div>
+        <div id="b_2_0" class="r3 c1" onclick="press(this)"></div>
+        <div id="b_2_1" class="r3 c2" onclick="press(this)"></div>
+        <div id="b_2_2" class="r3 c3" onclick="press(this)"></div>
+        <div id="gameover" class="r2 c2"><h1>Game over!</h1></div>
+	</body>
+</html>

@@ -1,0 +1,7 @@
+{
+	"name": "Lights!",
+	"version": "0.0.1",
+	"main": "index.js",
+	"icon": "icon.png",
+	"copyright": "Copyright info goes here"
+}
