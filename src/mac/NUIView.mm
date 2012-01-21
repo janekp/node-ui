@@ -126,6 +126,7 @@ namespace nui {
     
     if(self) {
         self->m_handle = handle;
+        [self setFrameLoadDelegate:self];
     }
     
     return self;
@@ -158,6 +159,26 @@ namespace nui {
 - (void)loadHTMLString:(NSString *)str
 {
     [[self mainFrame] loadHTMLString:str baseURL:nil];
+}
+
+#pragma mark WebFrameLoadDelegate
+
+- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
+{
+    nui::MacView *view = (nui::MacView *)self->m_handle;
+    
+    if(view) {
+        view->Emit("load");
+    }
+}
+
+- (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame
+{
+    nui::MacView *view = (nui::MacView *)self->m_handle;
+    
+    if(view) {
+        view->Emit("error");
+    }
 }
 
 @end
