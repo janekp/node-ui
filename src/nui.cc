@@ -32,7 +32,6 @@
 
 namespace nui {
     int Ready = 0;
-    const char *Path = NULL;
     
     typedef struct _Context {
         int argc;
