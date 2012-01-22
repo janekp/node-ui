@@ -22,10 +22,8 @@
 #include "nui_buffer.h"
 
 namespace nui {
-    v8::Persistent<v8::FunctionTemplate> Buffer::constructor;
-    
     Buffer *Buffer::Create() {
-        v8::Local<v8::Object> handle = Buffer::constructor->GetFunction()->NewInstance(0, NULL);
+        v8::Local<v8::Object> handle = Buffer::Template()->GetFunction()->NewInstance(0, NULL);
         
         return node::ObjectWrap::Unwrap<Buffer>(handle);
     }
@@ -33,14 +31,24 @@ namespace nui {
     void Buffer::Initialize(v8::Handle<v8::Object> target) {
         v8::HandleScope scope;
         
-        // Constructor
-        constructor = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New(Buffer::New));
-        constructor->InstanceTemplate()->SetInternalFieldCount(1);
-        constructor->SetClassName(v8::String::NewSymbol("Buffer"));
+        // Not exposed to Javascript at the moment
+        //target->Set(v8::String::NewSymbol("Buffer"), Buffer::Template()->GetFunction());
+    }
+    
+    v8::Persistent<v8::FunctionTemplate> Buffer::Template() {
+        static v8::Persistent<v8::FunctionTemplate> constructor;
         
-        // Prototype
-        v8::Local<v8::ObjectTemplate> proto = constructor->PrototypeTemplate();
-        proto->Set(v8::String::NewSymbol("write"), v8::FunctionTemplate::New(Buffer::Write)->GetFunction());
+        if(constructor.IsEmpty()) {
+            constructor = v8::Persistent<v8::FunctionTemplate>::New(v8::FunctionTemplate::New(Buffer::New));
+            constructor->InstanceTemplate()->SetInternalFieldCount(1);
+            constructor->SetClassName(v8::String::NewSymbol("Buffer"));
+            
+            // Prototype
+            v8::Local<v8::ObjectTemplate> proto = constructor->PrototypeTemplate();
+            proto->Set(v8::String::NewSymbol("write"), v8::FunctionTemplate::New(Buffer::Write)->GetFunction());
+        }
+        
+        return constructor;
     }
     
     v8::Handle<v8::Value> Buffer::New(const v8::Arguments &args) {

@@ -32,8 +32,10 @@ namespace nui {
         static std::string CreateTemporary();
         static std::string CreateResource(const std::string &path, const std::string &name);
         static std::string CombinePath(const std::string &dir, const std::string &name);
-        static int Exists(const std::string &path);
         static int DeleteDirectory(const std::string &path);
+        static std::string DirectoryPath(const std::string &path);
+        static int Exists(const std::string &path);
+        static int Exists(const std::string &path, size_t *length);
     };
 }
 

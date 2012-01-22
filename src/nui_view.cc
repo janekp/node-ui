@@ -66,11 +66,6 @@ namespace nui {
             char buffer[length + 1];
             
             str->WriteUtf8(&(buffer[0]), length + 1);
-            
-            if(args[1]->IsFunction()) {
-                // TODO: 
-            }
-            
             view->Exec(&(buffer[0]), args[1]);
         }
         

@@ -89,13 +89,17 @@ namespace nui {
     std::string IO::CombinePath(const std::string &path, const std::string &name) {
         std::string result;
         
+        if(!name.empty() && name.at(0) == path_separator) {
+            return name;
+        }
+        
         if(path.empty()) {
             result.append(&path_separator, 1);
         } else {
             result.append(path);
         }
         
-        if(result.at(result.length() - 1) != path_separator) {
+        if(result.empty() || result.at(result.length() - 1) != path_separator) {
             result.append(&path_separator, 1);
         }
         
@@ -153,9 +157,31 @@ namespace nui {
         return result;
     }
     
+    std::string IO::DirectoryPath(const std::string &path) {
+        for(size_t i = path.length(); i > 0; i--) {
+            if(path.at(i - 1) == path_separator) {
+                return path.substr(0, i - 1);
+            }
+        }
+        
+        return std::string("");
+    }
+    
     int IO::Exists(const std::string &path) {
         struct stat s;
         
         return (stat(path.c_str(), &s) == 0) ? 1 : 0;
+    }
+    
+    int IO::Exists(const std::string &path, size_t *length) {
+        struct stat s;
+        
+        if(stat(path.c_str(), &s) == 0) {
+            if(length) *length = s.st_size;
+            
+            return 1;
+        }
+        
+        return 0;
     }
 }

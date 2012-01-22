@@ -19,31 +19,40 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef nui_buffer_h
-#define nui_buffer_h
+#ifndef nui_asset_h
+#define nui_asset_h
 
 #include "nui.h"
 
 namespace nui {
-    class Buffer: public node::ObjectWrap {
+    typedef struct _AssetEntry {
+        const char *path;
+        const Resource *resource;
+        size_t length;
+    } AssetEntry;
+    
+    class Asset: public node::ObjectWrap {
     public:
-        static Buffer *Create();
-        
+        static const char *GetDirectory();
+        static AssetEntry GetEntry(const char *path);
         static void Initialize(v8::Handle<v8::Object> target);
+        static void Register(const char *path, const Resource *assets);
         
-        void *GetData() { return (void *)this->m_data; };
-        int GetLength() { return this->m_length; };
-        
+        AssetEntry GetEntry();
+    
     private:
         static v8::Persistent<v8::FunctionTemplate> Template();
         static v8::Handle<v8::Value> New(const v8::Arguments &args);
-        static v8::Handle<v8::Value> Write(const v8::Arguments &args);
+        static v8::Handle<v8::Value> Exists(const v8::Arguments &args);
+        static v8::Handle<v8::Value> GetLength(v8::Local<v8::String> prop, const v8::AccessorInfo &info);
+        static v8::Handle<v8::Value> ToBuffer(const v8::Arguments &args);
         
-        Buffer(const v8::Local<v8::Object> &handle);
-        virtual ~Buffer();
+        static const Resource *GetResource(const char *name);
         
-        char *m_data;
-        int m_length;
+        Asset(const v8::Local<v8::Object> &handle, const v8::Local<v8::Value> &path);
+        virtual ~Asset();
+        
+        AssetEntry m_entry;
     };
 }
 

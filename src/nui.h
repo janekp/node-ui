@@ -34,17 +34,25 @@
 #endif
 
 namespace nui {
-    extern int Ready;
-    
-    int Execute(int argc, char *argv[]);
-    int Main(int argc, char *argv[]);
-    
     typedef struct _Function {
         v8::Persistent<v8::Function> data;
         void *info;
     } Function;
+    
+    typedef struct _Resource {
+        const char *name;
+        const unsigned char *data;
+        size_t length;
+    } Resource;
+    
+    extern int Ready;
+    
+    void Embed(const Resource *resources);
+    int Execute(int argc, char *argv[]);
+    int Main(int argc, char *argv[]);
 }
 
 NODE_MODULE_DECL(ui);
+NODE_MODULE_DECL(uix);
 
 #endif

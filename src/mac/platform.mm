@@ -19,32 +19,27 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef nui_buffer_h
-#define nui_buffer_h
-
-#include "nui.h"
+#include "nui_events.h"
+#include <Foundation/Foundation.h>
 
 namespace nui {
-    class Buffer: public node::ObjectWrap {
-    public:
-        static Buffer *Create();
+    static void EmitNativeCallback(EventEmitter *emitter, void *context, const v8::Persistent<v8::Function> &function) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        NSString *obj = (NSString *)context;
         
-        static void Initialize(v8::Handle<v8::Object> target);
+        if(emitter) {
+            v8::Local<v8::String> str = v8::String::New([obj UTF8String]);
+            v8::Handle<v8::Value> args[1] = { str };
+            
+            function->Call(emitter->handle_, 1, args);
+        } else {
+            [obj release];
+        }
         
-        void *GetData() { return (void *)this->m_data; };
-        int GetLength() { return this->m_length; };
-        
-    private:
-        static v8::Persistent<v8::FunctionTemplate> Template();
-        static v8::Handle<v8::Value> New(const v8::Arguments &args);
-        static v8::Handle<v8::Value> Write(const v8::Arguments &args);
-        
-        Buffer(const v8::Local<v8::Object> &handle);
-        virtual ~Buffer();
-        
-        char *m_data;
-        int m_length;
-    };
+        [pool release];
+    }
+    
+    void EventEmitter::Emit(const std::string &name, void *nativePtr) {
+        this->Emit(name, EmitNativeCallback, [(id)nativePtr retain]);
+    }
 }
-
-#endif

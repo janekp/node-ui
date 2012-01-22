@@ -23,13 +23,16 @@
 #include <unistd.h>
 #include "nui.h"
 #include "nui_application.h"
+#include "nui_asset.h"
 #include "nui_buffer.h"
+#include "nui_io.h"
 #include "nui_menu.h"
 #include "nui_view.h"
 #include "nui_window.h"
 
 namespace nui {
     int Ready = 0;
+    const char *Path = NULL;
     
     typedef struct _Context {
         int argc;
@@ -38,11 +41,15 @@ namespace nui {
     
     static void Initialize(v8::Handle<v8::Object> target) {
         Application::Initialize(target);
-        Buffer::Initialize(target);
         Menu::Initialize(target);
         View::Initialize(target);
         Window::Initialize(target);
         WebWindow::Initialize(target);
+    }
+    
+    static void InitializeExtensions(v8::Handle<v8::Object> target) {
+        Asset::Initialize(target);
+        Buffer::Initialize(target);
     }
     
     static void Complete(uv_timer_t *handle, int status) {
@@ -64,6 +71,9 @@ namespace nui {
         // Register 'ui' module
         node::register_dynamic_module(&ui_module);
         
+        // Register 'uix' module
+        node::register_dynamic_module(&uix_module);
+        
         // Run everything
         node::Start(ctx->argc, ctx->argv);
         
@@ -74,6 +84,20 @@ namespace nui {
         Context *ctx = (Context *)malloc(sizeof(Context));
         pthread_t thread;
         
+        // This is not nice, but so what atm?
+        for(int argi; argi < argc; argi++) {
+            const char *x = strstr(argv[argi], ".js");
+            
+            if(x != NULL && strlen(x) == 3) {
+                char buffer[PATH_MAX];
+                
+                getcwd(&(buffer[0]), PATH_MAX);
+                Asset::Register(IO::DirectoryPath(IO::CombinePath(std::string(&(buffer[0])), std::string(argv[argi]))).c_str(), NULL);
+                break;
+            }
+        }
+        
+        // Spawn a new thread
         ctx->argc = argc;
         ctx->argv = (char **)argv;
         
@@ -81,7 +105,11 @@ namespace nui {
         
         return 0;
     }
+    
+    void Embed(const Resource *resources) {
+        Asset::Register(NULL, resources);
+    }
 }
 
 NODE_MODULE(ui, nui::Initialize);
-
+NODE_MODULE(uix, nui::InitializeExtensions);

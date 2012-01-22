@@ -21,6 +21,7 @@
 
 #import "NUIProxy.h"
 #import "NUIView.h"
+#import "nui_asset.h"
 #import "nui_view.h"
 
 namespace nui {
@@ -153,7 +154,32 @@ namespace nui {
 
 - (void)loadPathString:(NSString *)path
 {
-    [[self mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:path]]];
+    // URL scheme
+    if([path rangeOfString:@"://"].location != NSNotFound) {
+        [[self mainFrame] loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:path]]];
+    // Asset
+    } else {
+        const char *root;
+        
+        if(![path hasPrefix:@"/"] && (root = nui::Asset::GetDirectory()) != NULL) {
+            path = [[NSString stringWithCString:root encoding:NSUTF8StringEncoding] stringByAppendingPathComponent:path];
+        }
+        
+        {
+            nui::AssetEntry entry = nui::Asset::GetEntry(path.UTF8String);
+            NSData *data = nil;
+            
+            if(entry.resource) {
+                data = [[[NSData alloc] initWithBytesNoCopy:(void *)entry.resource->data length:entry.resource->length freeWhenDone:NO] autorelease];
+            } else if(entry.path) {
+                data = [NSData dataWithContentsOfFile:path];
+            } else {
+                data = [NSData data];
+            }// 
+            
+            [[self mainFrame] loadData:data MIMEType:@"text/html" textEncodingName:@"UTF-8" baseURL:[NSURL fileURLWithPath:path]];
+        }
+    }
 }
 
 - (void)loadHTMLString:(NSString *)str
