@@ -20,6 +20,6 @@ ui.application.on('deactivate', function() {
 	window.title = "Hello World";
 });
 
-ui.application.on('close', function() {
+ui.application.on('exit', function() {
 	console.log('Application exited');
 });
