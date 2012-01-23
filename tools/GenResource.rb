@@ -9,13 +9,9 @@ fdst = File.new(dst, 'w')
 fdst.puts "#ifndef nui_resources_h"
 fdst.puts "#define nui_resources_h"
 fdst.puts ""
-fdst.puts "namespace nui {"
-fdst.puts "    typedef struct _Resource {"
-fdst.puts "        const char *name;"
-fdst.puts "        const unsigned char *data;"
-fdst.puts "        size_t length;"
-fdst.puts "    } Resource;"
+fdst.puts "#include \"nui.h\""
 fdst.puts ""
+fdst.puts "namespace nui {"
 
 Dir.glob(File.join(ARGV[0], '*')) { |src|
 	name = File.basename(src)
