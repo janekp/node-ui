@@ -29,6 +29,7 @@ namespace nui {
     public:
         Package(const std::string &path);
         
+        const std::string &GetExecutableName();
         const std::string &GetName();
         const std::string &GetCopyright();
         const std::string &GetVersion();

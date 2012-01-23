@@ -29,15 +29,17 @@ namespace nui {
         Json::Reader reader(features);
         Json::Value root;
         
-        if(reader.parse(IO::ReadFileToString(path), root) && root.type() == Json::objectValue) {
+        this->m_version = "0.1";
+        
+        if(!path.empty() && reader.parse(IO::ReadFileToString(path), root) && root.type() == Json::objectValue) {
             Json::Value null = Json::Value();
             Json::Value value;
             
             value = root.get("name", null);
-            this->m_name = (value.isString()) ? value.asString() : std::string("node-ui");
+            if(value.isString()) this->m_name = value.asString();
             
             value = root.get("version", null);
-            this->m_version = (value.isString()) ? value.asString() : std::string("0.1");
+            if(value.isString()) this->m_version = value.asString();
             
             value = root.get("copyright", null);
             if(value.isString()) this->m_copyright = value.asString();
@@ -54,10 +56,20 @@ namespace nui {
                 if(value.isString()) {
                     this->m_icons.push_back(value.asString());
                 } else {
-                    this->m_icons.push_back(std::string("icon.png"));
+                    this->m_icons.push_back("icon.png");
                 }
             }
+        } else {
+            this->m_icons.push_back("icon.png");
         }
+        
+        if(this->m_name.empty()) {
+            this->m_name = "node-ui";
+        }
+    }
+    
+    const std::string &Package::GetExecutableName() {
+        return this->m_name;
     }
     
     const std::string &Package::GetName() {

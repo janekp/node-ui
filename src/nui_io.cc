@@ -74,7 +74,7 @@ namespace nui {
                 
                 umask(mask);
                 
-                if(fp) {
+                if(fp > 0) {
                     write(fp, resource.data, resource.length);
                     close(fp);
                     
@@ -189,7 +189,7 @@ namespace nui {
         int fp = open(path.c_str(), O_RDONLY);
         std::string result;
         
-        if(fp) {
+        if(fp > 0) {
             char buffer[1000];
             size_t bytes;
             

@@ -57,7 +57,7 @@ namespace nui {
         } else {
             Package package((!dir.empty()) ? IO::CombinePath(dir, std::string("package.json")) : std::string());
             std::string tmp = IO::CreateTemporary();
-            std::string app = IO::CreateDirectory(IO::CombinePath(tmp, package.GetName() + std::string(".app")));
+            std::string app = IO::CreateDirectory(IO::CombinePath(tmp, package.GetExecutableName() + std::string(".app")));
             std::string contents = IO::CreateDirectory(IO::CombinePath(app, std::string("Contents")));
             std::string macos = IO::CreateDirectory(IO::CombinePath(contents, std::string("MacOS")));
             std::string resources = IO::CreateDirectory(IO::CombinePath(contents, std::string("Resources")));
