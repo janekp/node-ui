@@ -19,24 +19,16 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef nui_io_h
-#define nui_io_h
+#ifndef nui_utils_h
+#define nui_utils_h
 
 #include "nui.h"
 
 namespace nui {
-    class IO {
+    class Utils {
     public:
-        static std::string CreateDirectory(const std::string &path);
-        static int CreateLink(const std::string &path, const std::string &link);
-        static std::string CreateTemporary();
-        static std::string CreateResource(const std::string &path, const std::string &name);
-        static std::string CombinePath(const std::string &dir, const std::string &name);
-        static int DeleteDirectory(const std::string &path);
-        static std::string DirectoryPath(const std::string &path);
-        static int Exists(const std::string &path);
-        static int Exists(const std::string &path, size_t *length);
-        static std::string ReadFileToString(const std::string &path);
+        static std::string GetApplicationDirectory(int argc, char *argv[]);
+        static std::string ToString(const v8::Handle<v8::Value> &data);
     };
 }
 

@@ -19,8 +19,12 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#include <fstream>
 #include "nui.h"
+#include "nui_asset.h"
 #include "nui_io.h"
+#include "nui_package.h"
+#include "nui_utils.h"
 
 extern "C" {
     #include <Foundation/Foundation.h>
@@ -29,10 +33,17 @@ extern "C" {
 
 namespace nui {
     int Main(int argc, char *argv[]) {
+        std::string dir = Utils::GetApplicationDirectory(argc, argv);
+        
         // The app is being launched from GUI or execv()
         if(argc > 0 && strstr(argv[0], ".app/Contents/MacOS")) {
             NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
             int result;
+            
+            // Set the root directory for all the assets
+            if(!dir.empty()) {
+                Asset::Register(dir.c_str(), NULL);
+            }
             
             // Execute all the scripts, setup async event handlers
             Execute(argc, argv);
@@ -44,19 +55,53 @@ namespace nui {
             return result;
         // The app is being launched from CLI (so lets generate an .app)
         } else {
+            Package package((!dir.empty()) ? IO::CombinePath(dir, std::string("package.json")) : std::string());
             std::string tmp = IO::CreateTemporary();
-            std::string app = IO::CreateDirectory(IO::CombinePath(tmp, std::string("node-ui.app")));
+            std::string app = IO::CreateDirectory(IO::CombinePath(tmp, package.GetName() + std::string(".app")));
             std::string contents = IO::CreateDirectory(IO::CombinePath(app, std::string("Contents")));
             std::string macos = IO::CreateDirectory(IO::CombinePath(contents, std::string("MacOS")));
             std::string resources = IO::CreateDirectory(IO::CombinePath(contents, std::string("Resources")));
             std::string infoPlist = IO::CombinePath(contents, std::string("Info.plist"));
             std::string binary = IO::CombinePath(macos, std::string("node-ui"));
+            std::ofstream file;
             pid_t pid;
             int fd[2];
             
             IO::CreateResource(IO::CombinePath(resources, std::string("MainMenu.nib")), std::string("MainMenu.nib"));
             IO::CreateResource(IO::CombinePath(contents, std::string("PkgInfo")), std::string("PkgInfo"));
-            IO::CreateResource(infoPlist, std::string("Info.plist"));
+            
+            file.open(infoPlist.c_str());
+            file << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+            file << "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">";
+            file << "<plist version=\"1.0\">";
+            file << "<dict>";
+            file << "<key>CFBundleDevelopmentRegion</key>";
+            file << "<string>English</string>";
+            file << "<key>CFBundleExecutable</key>";
+            file << "<string>node-ui</string>";
+            file << "<key>CFBundleIconFile</key>";
+            file << "<string>Icon</string>";
+            file << "<key>CFBundleIdentifier</key>";
+            file << "<string>com.node-ui.simulator</string>";
+            file << "<key>CFBundleInfoDictionaryVersion</key>";
+            file << "<string>6.0</string>";
+            file << "<key>CFBundleName</key>";
+            file << "<string>" + package.GetName() + "</string>";
+            file << "<key>CFBundlePackageType</key>";
+            file << "<string>APPL</string>";
+            file << "<key>CFBundleSignature</key>";
+            file << "<string>????</string>";
+            file << "<key>CFBundleVersion</key>";
+            file << "<string>1.0</string>";
+            file << "<key>LSHasLocalizedDisplayName</key>";
+            file << "<true/>";
+            file << "<key>NSMainNibFile</key>";
+            file << "<string>MainMenu</string>";
+            file << "<key>NSPrincipalClass</key>";
+            file << "<string>NUIApplication</string>";
+            file << "</dict>";
+            file << "</plist>";
+            file.close();
             
             if(argc > 0) {
                 IO::CreateLink(binary, std::string(argv[0]));

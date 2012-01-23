@@ -19,24 +19,26 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef nui_io_h
-#define nui_io_h
+#ifndef nui_package_h
+#define nui_package_h
 
 #include "nui.h"
 
 namespace nui {
-    class IO {
+    class Package {
     public:
-        static std::string CreateDirectory(const std::string &path);
-        static int CreateLink(const std::string &path, const std::string &link);
-        static std::string CreateTemporary();
-        static std::string CreateResource(const std::string &path, const std::string &name);
-        static std::string CombinePath(const std::string &dir, const std::string &name);
-        static int DeleteDirectory(const std::string &path);
-        static std::string DirectoryPath(const std::string &path);
-        static int Exists(const std::string &path);
-        static int Exists(const std::string &path, size_t *length);
-        static std::string ReadFileToString(const std::string &path);
+        Package(const std::string &path);
+        
+        const std::string &GetName();
+        const std::string &GetCopyright();
+        const std::string &GetVersion();
+        const std::vector<std::string> &GetIcons();
+        
+    private:
+        std::string m_copyright;
+        std::string m_name;
+        std::string m_version;
+        std::vector<std::string> m_icons;
     };
 }
 

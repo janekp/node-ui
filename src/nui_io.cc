@@ -59,7 +59,7 @@ namespace nui {
             }
         }
         
-        return std::string("");
+        return std::string();
     }
     
     std::string IO::CreateResource(const std::string &path, const std::string &name) {
@@ -164,7 +164,7 @@ namespace nui {
             }
         }
         
-        return std::string("");
+        return std::string();
     }
     
     int IO::Exists(const std::string &path) {
@@ -183,5 +183,23 @@ namespace nui {
         }
         
         return 0;
+    }
+    
+    std::string IO::ReadFileToString(const std::string &path) {
+        int fp = open(path.c_str(), O_RDONLY);
+        std::string result;
+        
+        if(fp) {
+            char buffer[1000];
+            size_t bytes;
+            
+            while((bytes = read(fp, &(buffer[0]), 1000)) != 0) {
+                result.append(&(buffer[0]), bytes);
+            }
+            
+            close(fp);
+        }
+        
+        return result;
     }
 }

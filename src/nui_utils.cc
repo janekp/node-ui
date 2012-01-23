@@ -19,39 +19,41 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef nui_h
-#define nui_h
-
-#include <node.h>
-#include <map>
-#include <string>
-#include <vector>
-
-#ifdef DEBUG
-#define nui_log printf
-#else
-#define nui_log //
-#endif
+#include "nui_io.h"
+#include "nui_utils.h"
 
 namespace nui {
-    typedef struct _Function {
-        v8::Persistent<v8::Function> data;
-        void *info;
-    } Function;
+    std::string Utils::GetApplicationDirectory(int argc, char *argv[]) {
+        // This is not nice, but so what atm?
+        for(int argi; argi < argc; argi++) {
+            const char *x = strstr(argv[argi], ".js");
+            
+            if(x != NULL && strlen(x) == 3) {
+                char buffer[PATH_MAX];
+                
+                getcwd(&(buffer[0]), PATH_MAX);
+                return IO::DirectoryPath(IO::CombinePath(std::string(&(buffer[0])), std::string(argv[argi])));
+                break;
+            }
+        }
+        
+        return std::string();
+    }
     
-    typedef struct _Resource {
-        const char *name;
-        const unsigned char *data;
-        size_t length;
-    } Resource;
-    
-    extern int Ready;
-    
-    int Execute(int argc, char *argv[]);
-    int Main(int argc, char *argv[]);
+    std::string Utils::ToString(const v8::Handle<v8::Value> &data) {
+        if(data->IsString()) {
+            v8::Local<v8::String> str = data->ToString();
+            int length = str->Utf8Length();
+            
+            if(length > 0) {
+                char buffer[length + 1];
+                
+                str->WriteUtf8(&(buffer[0]), length + 1);
+                
+                return std::string(&(buffer[0]));
+            }
+        }
+        
+        return std::string();
+    }
 }
-
-NODE_MODULE_DECL(ui);
-NODE_MODULE_DECL(uix);
-
-#endif

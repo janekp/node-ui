@@ -20,12 +20,10 @@
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <pthread.h>
-#include <unistd.h>
 #include "nui.h"
 #include "nui_application.h"
 #include "nui_asset.h"
 #include "nui_buffer.h"
-#include "nui_io.h"
 #include "nui_menu.h"
 #include "nui_view.h"
 #include "nui_window.h"
@@ -83,19 +81,6 @@ namespace nui {
         Context *ctx = (Context *)malloc(sizeof(Context));
         pthread_t thread;
         
-        // This is not nice, but so what atm?
-        for(int argi; argi < argc; argi++) {
-            const char *x = strstr(argv[argi], ".js");
-            
-            if(x != NULL && strlen(x) == 3) {
-                char buffer[PATH_MAX];
-                
-                getcwd(&(buffer[0]), PATH_MAX);
-                Asset::Register(IO::DirectoryPath(IO::CombinePath(std::string(&(buffer[0])), std::string(argv[argi]))).c_str(), NULL);
-                break;
-            }
-        }
-        
         // Spawn a new thread
         ctx->argc = argc;
         ctx->argv = (char **)argv;
@@ -103,10 +88,6 @@ namespace nui {
         pthread_create(&thread, NULL, &ExecuteOnThread, ctx);
         
         return 0;
-    }
-    
-    void Embed(const Resource *resources) {
-        Asset::Register(NULL, resources);
     }
 }
 

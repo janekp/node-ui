@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		8162E66714CC59CE004569DC /* platform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8162E66614CC59CE004569DC /* platform.mm */; };
+		816F074614CDBF7B00CA2F8E /* nui_package.cc in Sources */ = {isa = PBXBuildFile; fileRef = 816F074514CDBF7B00CA2F8E /* nui_package.cc */; };
+		816F074F14CE08BA00CA2F8E /* nui_utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 816F074E14CE08B800CA2F8E /* nui_utils.cc */; };
+		816F076214CE14DF00CA2F8E /* json_reader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 816F075E14CE14DF00CA2F8E /* json_reader.cpp */; };
+		816F076314CE14DF00CA2F8E /* json_value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 816F075F14CE14DF00CA2F8E /* json_value.cpp */; };
+		816F076414CE14DF00CA2F8E /* json_writer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 816F076114CE14DF00CA2F8E /* json_writer.cpp */; };
 		817A9BF914CA557C00A0836B /* nui_buffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = 817A9BF814CA557C00A0836B /* nui_buffer.cc */; };
 		817E687714BA13F700FA79B6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 817E687614BA13F700FA79B6 /* Foundation.framework */; };
 		817E688514BA15EE00FA79B6 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 817E688414BA15EE00FA79B6 /* AppKit.framework */; };
@@ -43,6 +48,17 @@
 
 /* Begin PBXFileReference section */
 		8162E66614CC59CE004569DC /* platform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = platform.mm; path = src/mac/platform.mm; sourceTree = SOURCE_ROOT; };
+		816F074514CDBF7B00CA2F8E /* nui_package.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = nui_package.cc; path = src/nui_package.cc; sourceTree = SOURCE_ROOT; };
+		816F074814CDBFAC00CA2F8E /* nui_package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nui_package.h; path = src/nui_package.h; sourceTree = SOURCE_ROOT; };
+		816F074D14CE089E00CA2F8E /* nui_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nui_utils.h; path = src/nui_utils.h; sourceTree = SOURCE_ROOT; };
+		816F074E14CE08B800CA2F8E /* nui_utils.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = nui_utils.cc; path = src/nui_utils.cc; sourceTree = SOURCE_ROOT; };
+		816F075B14CE14DF00CA2F8E /* json_batchallocator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = json_batchallocator.h; path = lib/json/src/json_batchallocator.h; sourceTree = SOURCE_ROOT; };
+		816F075C14CE14DF00CA2F8E /* json_internalarray.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = json_internalarray.inl; path = lib/json/src/json_internalarray.inl; sourceTree = SOURCE_ROOT; };
+		816F075D14CE14DF00CA2F8E /* json_internalmap.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = json_internalmap.inl; path = lib/json/src/json_internalmap.inl; sourceTree = SOURCE_ROOT; };
+		816F075E14CE14DF00CA2F8E /* json_reader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_reader.cpp; path = lib/json/src/json_reader.cpp; sourceTree = SOURCE_ROOT; };
+		816F075F14CE14DF00CA2F8E /* json_value.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_value.cpp; path = lib/json/src/json_value.cpp; sourceTree = SOURCE_ROOT; };
+		816F076014CE14DF00CA2F8E /* json_valueiterator.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = json_valueiterator.inl; path = lib/json/src/json_valueiterator.inl; sourceTree = SOURCE_ROOT; };
+		816F076114CE14DF00CA2F8E /* json_writer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = json_writer.cpp; path = lib/json/src/json_writer.cpp; sourceTree = SOURCE_ROOT; };
 		817A9BF614CA556500A0836B /* nui_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = nui_buffer.h; path = src/nui_buffer.h; sourceTree = SOURCE_ROOT; };
 		817A9BF814CA557C00A0836B /* nui_buffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = nui_buffer.cc; path = src/nui_buffer.cc; sourceTree = SOURCE_ROOT; };
 		817E687214BA13F700FA79B6 /* node-ui */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "node-ui"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -94,6 +110,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		816F075014CE143E00CA2F8E /* json */ = {
+			isa = PBXGroup;
+			children = (
+				816F075B14CE14DF00CA2F8E /* json_batchallocator.h */,
+				816F075C14CE14DF00CA2F8E /* json_internalarray.inl */,
+				816F075D14CE14DF00CA2F8E /* json_internalmap.inl */,
+				816F075E14CE14DF00CA2F8E /* json_reader.cpp */,
+				816F075F14CE14DF00CA2F8E /* json_value.cpp */,
+				816F076014CE14DF00CA2F8E /* json_valueiterator.inl */,
+				816F076114CE14DF00CA2F8E /* json_writer.cpp */,
+			);
+			name = json;
+			sourceTree = "<group>";
+		};
 		817E686714BA13F700FA79B6 = {
 			isa = PBXGroup;
 			children = (
@@ -124,6 +154,7 @@
 		817E687814BA13F700FA79B6 /* node-ui */ = {
 			isa = PBXGroup;
 			children = (
+				816F075014CE143E00CA2F8E /* json */,
 				817E688914BA1ACE00FA79B6 /* mac */,
 				81F218B114CA1F3A00E38383 /* nui_application.h */,
 				81F218B014CA1F3A00E38383 /* nui_application.cc */,
@@ -137,7 +168,11 @@
 				81F218B514CA1F3A00E38383 /* nui_io.cc */,
 				81F218B814CA1F3A00E38383 /* nui_menu.h */,
 				81F218B714CA1F3A00E38383 /* nui_menu.cc */,
+				816F074814CDBFAC00CA2F8E /* nui_package.h */,
+				816F074514CDBF7B00CA2F8E /* nui_package.cc */,
 				81F218B414CA1F3A00E38383 /* nui_resources.h */,
+				816F074D14CE089E00CA2F8E /* nui_utils.h */,
+				816F074E14CE08B800CA2F8E /* nui_utils.cc */,
 				81F218BA14CA1F3A00E38383 /* nui_view.h */,
 				81F218B914CA1F3A00E38383 /* nui_view.cc */,
 				81F218BC14CA1F3A00E38383 /* nui_window.h */,
@@ -235,6 +270,11 @@
 				817A9BF914CA557C00A0836B /* nui_buffer.cc in Sources */,
 				81E1DCF714CC292400AAC762 /* nui_asset.cc in Sources */,
 				8162E66714CC59CE004569DC /* platform.mm in Sources */,
+				816F074614CDBF7B00CA2F8E /* nui_package.cc in Sources */,
+				816F074F14CE08BA00CA2F8E /* nui_utils.cc in Sources */,
+				816F076214CE14DF00CA2F8E /* json_reader.cpp in Sources */,
+				816F076314CE14DF00CA2F8E /* json_value.cpp in Sources */,
+				816F076414CE14DF00CA2F8E /* json_writer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +329,10 @@
 		817E688214BA13F700FA79B6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = /usr/local/include/node;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/node,
+					"$(PROJECT_DIR)/lib/json/include",
+				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				OTHER_LDFLAGS = "-lnode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -299,7 +342,10 @@
 		817E688314BA13F700FA79B6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				HEADER_SEARCH_PATHS = /usr/local/include/node;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/node,
+					"$(PROJECT_DIR)/lib/json/include",
+				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				OTHER_LDFLAGS = "-lnode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
